@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { Club } from "./ClubCard";
+import { useToast } from "@/components/ui/use-toast";
 
 interface AddClubModalProps {
   onAddClub: (club: Omit<Club, "id">) => void;
@@ -29,9 +30,38 @@ const AddClubModal = ({ onAddClub }: AddClubModalProps) => {
   const [category, setCategory] = useState("");
   const [members, setMembers] = useState(0);
   const [open, setOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate form inputs
+    if (!name.trim()) {
+      toast({
+        title: "Missing information",
+        description: "Please enter a club name",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!description.trim()) {
+      toast({
+        title: "Missing information",
+        description: "Please enter a club description",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!category) {
+      toast({
+        title: "Missing information",
+        description: "Please select a category",
+        variant: "destructive"
+      });
+      return;
+    }
     
     const newClub = {
       name,
@@ -48,6 +78,11 @@ const AddClubModal = ({ onAddClub }: AddClubModalProps) => {
     setCategory("");
     setMembers(0);
     setOpen(false);
+    
+    toast({
+      title: "Club added",
+      description: `${name} has been successfully added`,
+    });
   };
 
   return (
